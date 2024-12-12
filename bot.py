@@ -41,7 +41,26 @@ async def on_member_update(before: discord.Member, after: discord.Member):
     log_channel = bot.get_channel(LOG_CHANNEL)
     await log_channel.send('Cargos Alterados')
 
+@bot.command()
+async def verificar(ctx):
+    """Comando para verificar membros com um cargo específico e entrada há mais de 4 horas."""
+    cargo = discord.utils.get(ctx.guild.roles, id=ROLE_ID)
+    if not cargo:
+        await ctx.send("Cargo não encontrado.")
+        return
 
+    agora = datetime.utcnow()
+    membros_verificados = []
+
+    for membro in ctx.guild.members:
+        if cargo in membro.roles:  # Verifica se o membro tem o cargo
+            if membro.joined_at and (agora - membro.joined_at).total_seconds() > 4 * 3600:
+                membros_verificados.append(membro.mention)
+
+    if membros_verificados:
+        await ctx.send(f"Os seguintes membros possuem o cargo e estão há mais de 4 horas no servidor: {', '.join(membros_verificados)}")
+    else:
+        await ctx.send("Nenhum membro atende aos critérios.")
 
 
 
