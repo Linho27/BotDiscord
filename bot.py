@@ -27,7 +27,8 @@ async def kickMembers(ctx, role: discord.Role, reason: str = None):
 
 @bot.command()
 async def verificar(ctx):
-    cargo = discord.utils.get(ctx.guild.roles, id=ROLE_ID)
+    member = ctx.author
+    cargo = discord.utils.get(member.guild.roles, name="Teste")
     if not cargo:
         await ctx.send("Cargo não encontrado.")
         return
