@@ -1,12 +1,11 @@
 import os
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 from discord.ext.commands import has_permissions
 from dotenv import load_dotenv
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 
 load_dotenv()
-
 ROLE_ID = os.getenv('ROLE_ID')
 GUILD_ID = os.getenv('GUILD_ID')
 LOG_CHANNEL = os.getenv('LOG_CHANNEL')
@@ -24,40 +23,33 @@ async def kickMembers(ctx, role: discord.Role, reason: str = None):
 
     await ctx.reply('Members kicked')
 
-@tasks.loop(minutes=1)
-async def verificar():
-    guild = discord.utils.get(bot.guilds, id=int(GUILD_ID))
-    if not guild:
-        print("Guild not found.")
-        return
+@bot.command()
+async def a(ctx):
+    member = ctx.author
+    agora = datetime.now(timezone.utc)
+    await ctx.send(agora)
+    await ctx.send(member.joined_at)
 
-    cargo = discord.utils.get(guild.roles, name="Teste")
+@bot.command()
+async def verificar(ctx):
+    member = ctx.author
+    cargo = discord.utils.get(member.guild.roles, name="Teste")
+
     if not cargo:
-        print("Role 'Teste' not found.")
+        await ctx.send("Cargo não encontrado.")
         return
 
     membros_verificados = []
-    agora = datetime.now(timezone.utc)
-
-    for membro in guild.members:
+    for membro in ctx.guild.members:
+        agora = datetime.now(timezone.utc)
         if cargo in membro.roles:
             if (agora - membro.joined_at).total_seconds() > 4 * 3600:
                 membros_verificados.append(membro.mention)
 
-    log_channel = discord.utils.get(guild.text_channels, id=int(LOG_CHANNEL))
-    if log_channel:
-        if membros_verificados:
-            await log_channel.send(f"Os seguintes membros possuem o cargo e estão há mais de 4 horas no servidor: {', '.join(membros_verificados)}")
-        else:
-            await log_channel.send("Nenhum membro atende aos critérios.")
+    if membros_verificados:
+        await ctx.send(f"Os seguintes membros possuem o cargo e estão há mais de 4 horas no servidor: {', '.join(membros_verificados)}")
     else:
-        print("Log channel not found.")
-
-@verificar.before_loop
-async def before_verificar():
-    await bot.wait_until_ready()
-
-verificar.start()
+        await ctx.send("Nenhum membro atende aos critérios.")
 
 if __name__ == "__main__":
     token = os.getenv('DISCORD_TOKEN')
