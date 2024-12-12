@@ -44,7 +44,7 @@ async def verificar(ctx):
     membros_verificados = []
 
     for membro in ctx.guild.members:
-        agora = datetime.utcnow()
+        agora = datetime.utcnow().replace(tzinfo=timezone.utc)
         if cargo in membro.roles:  # Verifica se o membro tem o cargo
             if (datetime.utcnow() - membro.joined_at).total_seconds() > 4 * 3600:
                 membros_verificados.append(membro.mention)
@@ -53,9 +53,6 @@ async def verificar(ctx):
         await ctx.send(f"Os seguintes membros possuem o cargo e estão há mais de 4 horas no servidor: {', '.join(membros_verificados)}")
     else:
         await ctx.send("Nenhum membro atende aos critérios.")
-
-
-#teste
 
 
 
