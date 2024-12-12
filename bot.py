@@ -34,6 +34,7 @@ async def hello(ctx):
 
 @bot.event
 async def on_member_update(before: discord.Member, after: discord.Member):
+    log_channel = bot.get_channel(LOG_CHANNEL)
     await log_channel.send('Cargos Alterados')
 
 
