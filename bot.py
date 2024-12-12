@@ -31,6 +31,7 @@ async def kickMembers(ctx, role: discord.Role, reason: str = None):
 @bot.command()
 async def hello(ctx):
     await ctx.send(f"Hello {ctx.author.name}! 😃")
+    member = ctx.author
     role = discord.utils.get(ctx.guild.roles, name="Teste")
     member.add_roles(role)
     
