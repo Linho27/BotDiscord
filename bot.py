@@ -4,7 +4,6 @@ from discord.ext import commands, tasks
 from discord.ext.commands import has_permissions
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
-from dateutil import parser
 
 # Load environment variables
 load_dotenv()
