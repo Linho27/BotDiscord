@@ -37,7 +37,7 @@ async def verificar(ctx):
         await ctx.send("Servidor não encontrado.")
         return
 
-    cargo = discord.utils.get(guild.roles, name="Teste")
+    cargo = discord.utils.get(guild.roles, name="🎟️ ∥ Visitante")
     if not cargo:
         await ctx.send("Cargo não encontrado.")
         return
