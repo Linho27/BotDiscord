@@ -44,15 +44,37 @@ async def check_roles():
     for member in guild.members:
         if role in member.roles:
             join_time = role_check_times.get(member.id)
+            log_channel = bot.get_channel(LOG_CHANNEL)
             if join_time and datetime.utcnow() - join_time > timedelta(minutes=1):
                 try:
                     await member.kick(reason="Teve o cargo por mais de 1 minuto.")
-                    await LOG_CHANNEL.send(f"Usuário {member.mention} foi kickado por ter o cargo por mais de 1 minuto.")
+                    await log_channel.send(f"Usuário {member.mention} foi kickado por ter o cargo por mais de 1 minuto.")
                     del role_check_times[member.id]
                 except Exception as e:
-                    await LOG_CHANNEL.send(f"Erro ao tentar kickar {member.mention}: {e}")
+                    await log_channel.send(f"Erro ao tentar kickar {member.mention}: {e}")
 
+@bot.event
+async def on_member_update(before: discord.Member, after: discord.Member):
+    if before.roles != after.roles:
+        log_channel = bot.get_channel(LOG_CHANNEL)
+        if log_channel:
+            # Obtendo os cargos adicionados e removidos
+            before_roles = set(before.roles)
+            after_roles = set(after.roles)
 
+            added_roles = after_roles - before_roles
+            removed_roles = before_roles - after_roles
+
+            changes = []
+            if added_roles:
+                changes.append(f'**Adicionados:** {", ".join(role.name for role in added_roles)}')
+            if removed_roles:
+                changes.append(f'**Removidos:** {", ".join(role.name for role in removed_roles)}')
+
+            if changes:
+                await log_channel.send(
+                    f"Alteração de cargos para {after.mention}:\n" + "\n".join(changes)
+                )
 
 
 
