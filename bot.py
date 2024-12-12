@@ -15,22 +15,6 @@ bot = commands.Bot(command_prefix="!", intents=intents)
 
 @bot.command()
 @has_permissions(administrator=True)
-async def kickMembers(ctx, role: discord.Role, reason: str = None):
-    await ctx.reply('Kicking members')
-
-    for member in role.members:
-        await member.kick(reason=reason)
-
-    await ctx.reply('Members kicked')
-
-@bot.command()
-async def a(ctx):
-    member = ctx.author
-    agora = datetime.now(timezone.utc)
-    await ctx.send(agora)
-    await ctx.send(member.joined_at)
-
-@bot.command()
 async def verificar(ctx):
     guild = bot.get_guild(int(GUILD_ID))
     if not guild:
@@ -42,17 +26,27 @@ async def verificar(ctx):
         await ctx.send("Cargo não encontrado.")
         return
 
-    membros_verificados = []
+    log_channel = bot.get_channel(int(LOG_CHANNEL))
+    if not log_channel:
+        await ctx.send("Canal de log não encontrado.")
+        return
+
+    membros_kickados = []
+    agora = datetime.now(timezone.utc)
+
     for membro in guild.members:
-        agora = datetime.now(timezone.utc)
         if cargo in membro.roles:
             if (agora - membro.joined_at).total_seconds() > 4 * 3600:
-                membros_verificados.append(membro.mention)
+                try:
+                    await membro.kick(reason="Tempo no servidor excedeu 4 horas com o cargo Visitante.")
+                    membros_kickados.append(membro.name)
+                except Exception as e:
+                    await log_channel.send(f"Erro ao expulsar {membro.name}: {e}")
 
-    if membros_verificados:
-        await ctx.send(f"Os seguintes membros possuem o cargo e estão há mais de 4 horas no servidor: {', '.join(membros_verificados)}")
+    if membros_kickados:
+        await log_channel.send(f"Os seguintes membros foram expulsos por estarem há mais de 4 horas no servidor com o cargo Visitante: {', '.join(membros_kickados)}")
     else:
-        await ctx.send("Nenhum membro atende aos critérios.")
+        await log_channel.send("Nenhum membro atende aos critérios para expulsão.")
 
 if __name__ == "__main__":
     token = os.getenv('DISCORD_TOKEN')
