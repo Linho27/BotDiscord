@@ -28,7 +28,7 @@ async def kickMembers(ctx, role: discord.Role, reason: str = None):
 async def a(ctx):
     member = ctx.author
     await ctx.send(member.joined_at)
-    await ctx.send(datetime.uctnow)
+    await ctx.send(datetime.utcnow)
 
 
 @bot.command()
