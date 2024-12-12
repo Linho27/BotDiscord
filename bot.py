@@ -4,6 +4,7 @@ from discord.ext import commands, tasks
 from discord.ext.commands import has_permissions
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
+from dateutil import parser
 
 # Load environment variables
 load_dotenv()
@@ -27,9 +28,9 @@ async def kickMembers(ctx, role: discord.Role, reason: str = None):
 @bot.command()
 async def a(ctx):
     member = ctx.author
-    agora = datetime.utcnow()
-    await ctx.send(member.joined_at)
-    await ctx.send(agora)
+    agora = parser.isoparse(datetime.utcnow())
+    entrada = parser.isoparse(member.joined_at)
+    
 
 
 @bot.command()
