@@ -1,6 +1,6 @@
 import os
 import discord
-from discord.ext import commands
+from discord.ext import commands, tasks
 from discord.ext.commands import has_permissions
 from dotenv import load_dotenv
 from datetime import datetime, timezone
@@ -13,23 +13,11 @@ LOG_CHANNEL = os.getenv('LOG_CHANNEL')
 intents = discord.Intents().all()
 bot = commands.Bot(command_prefix="!", intents=intents)
 
-@bot.command()
-@has_permissions(administrator=True)
-async def verificar(ctx):
+@tasks.loop(minutes=1)  
+async def verificar_periodicamente():
     guild = bot.get_guild(int(GUILD_ID))
-    if not guild:
-        await ctx.send("Servidor não encontrado.")
-        return
-
     cargo = discord.utils.get(guild.roles, name="🎟️ ∥ Visitante")
-    if not cargo:
-        await ctx.send("Cargo não encontrado.")
-        return
-
     log_channel = bot.get_channel(int(LOG_CHANNEL))
-    if not log_channel:
-        await ctx.send("Canal de log não encontrado.")
-        return
 
     membros_kickados = []
     agora = datetime.now(timezone.utc)
@@ -47,6 +35,12 @@ async def verificar(ctx):
         await log_channel.send(f"Os seguintes membros foram expulsos por estarem há mais de 4 horas no servidor com o cargo Visitante: {', '.join(membros_kickados)}")
     else:
         await log_channel.send("Nenhum membro atende aos critérios para expulsão.")
+
+# Iniciar a tarefa periodicamente ao iniciar o bot
+@bot.event
+async def on_ready():
+    print(f'{bot.user} entrou no servidor.')
+    verificar_periodicamente.start()  # Inicia a tarefa quando o bot estiver pronto
 
 if __name__ == "__main__":
     token = os.getenv('DISCORD_TOKEN')
