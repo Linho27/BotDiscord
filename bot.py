@@ -24,6 +24,11 @@ async def kickMembers(ctx, role: discord.Role, reason: str = None):
 
     await ctx.reply('Members kicked')
 
+@bot.command()
+async def a(ctx):
+    member = ctx.author
+    await ctx.send(member.joined_at)
+
 
 @bot.command()
 async def verificar(ctx):
@@ -38,8 +43,6 @@ async def verificar(ctx):
     for membro in ctx.guild.members:
         agora = datetime.utcnow()
         if cargo in membro.roles:  # Verifica se o membro tem o cargo
-            entrada = datetime(membro.joined_at)
-            entrada = entrada.replace(tzinfo=None)
             if (datetime.utcnow() - membro.joined_at).total_seconds() > 4 * 3600:
                 membros_verificados.append(membro.mention)
 
