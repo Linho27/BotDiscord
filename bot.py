@@ -28,7 +28,9 @@ async def kickMembers(ctx, role: discord.Role, reason: str = None):
 
     await ctx.reply('Members kicked')
 
-
+@bot.command()
+async def hello(ctx):
+    await ctx.send(f"Hello {ctx.author.name}! 😃")
 
 
 
