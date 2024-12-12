@@ -55,7 +55,7 @@ async def verificar(ctx):
         await ctx.send("Nenhum membro atende aos critérios.")
 
 
-
+#teste
 
 
 
