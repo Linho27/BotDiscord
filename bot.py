@@ -38,7 +38,7 @@ async def verificar(ctx):
 
     for membro in ctx.guild.members:
         if cargo in membro.roles:  # Verifica se o membro tem o cargo
-            if membro.joined_at and (agora - membro.joined_at).total_seconds() > 4 * 3600:
+            # if membro.joined_at and (agora - membro.joined_at).total_seconds() > 4 * 3600:
                 membros_verificados.append(membro.mention)
 
     if membros_verificados:
