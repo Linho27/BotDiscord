@@ -33,7 +33,7 @@ async def hello(ctx):
     await ctx.send(f"Hello {ctx.author.name}! 😃")
     member = ctx.author
     role = discord.utils.get(ctx.guild.roles, name="Teste")
-    member.add_roles(role)
+    await member.add_roles(role)
     
 
 @bot.event
