@@ -24,7 +24,7 @@ async def kickMembers(ctx, role: discord.Role, reason: str = None):
 
     await ctx.reply('Members kicked')
 
-@tasks.loop(minutes=10)
+@tasks.loop(minutes=1)
 async def verificar():
     guild = discord.utils.get(bot.guilds, id=int(GUILD_ID))
     if not guild:
