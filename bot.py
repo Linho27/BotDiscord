@@ -32,15 +32,18 @@ async def a(ctx):
 
 @bot.command()
 async def verificar(ctx):
-    member = ctx.author
-    cargo = discord.utils.get(member.guild.roles, name="Teste")
+    guild = bot.get_guild(int(GUILD_ID))
+    if not guild:
+        await ctx.send("Servidor não encontrado.")
+        return
 
+    cargo = discord.utils.get(guild.roles, name="Teste")
     if not cargo:
         await ctx.send("Cargo não encontrado.")
         return
 
     membros_verificados = []
-    for membro in ctx.guild.members:
+    for membro in guild.members:
         agora = datetime.now(timezone.utc)
         if cargo in membro.roles:
             if (agora - membro.joined_at).total_seconds() > 4 * 3600:
