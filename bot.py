@@ -27,8 +27,9 @@ async def kickMembers(ctx, role: discord.Role, reason: str = None):
 @bot.command()
 async def a(ctx):
     member = ctx.author
-    agora = parser.isoparse(datetime.utcnow())
-    entrada = parser.isoparse(member.joined_at)
+    agora = datetime.now(timezone.utc)
+    await ctx.send(agora)
+    await ctx.send(member.joined_at)
     
 
 
