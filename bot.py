@@ -68,4 +68,4 @@ if __name__ == "__main__":
     if not token:
         raise ValueError("No token.")  # Garante que o token esteja presente
 
-    bot.run(token)  # Inicia o bot com o token obtido
+    bot.run(token)  # Inicia o bot com o token obtido    
